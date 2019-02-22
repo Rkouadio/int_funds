@@ -1,0 +1,254 @@
+-- phpMyAdmin SQL Dump
+-- version 4.8.4
+-- https://www.phpmyadmin.net/
+--
+-- Hôte : 127.0.0.1
+-- Généré le :  ven. 22 fév. 2019 à 18:25
+-- Version du serveur :  10.1.37-MariaDB
+-- Version de PHP :  7.3.1
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de données :  `fonds_opcvm360`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `comptes`
+--
+
+CREATE TABLE `comptes` (
+  `id_comptes` int(11) NOT NULL,
+  `login` varchar(55) NOT NULL,
+  `mot_de_passe` varchar(55) DEFAULT NULL,
+  `statut` varchar(10) NOT NULL,
+  `users` int(11) DEFAULT NULL,
+  `roles` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `connexions`
+--
+
+CREATE TABLE `connexions` (
+  `id_connexions` int(11) NOT NULL,
+  `IP` varchar(55) NOT NULL,
+  `Debut` datetime DEFAULT NULL,
+  `Fin` datetime DEFAULT NULL,
+  `comptes` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `requetes`
+--
+
+CREATE TABLE `requetes` (
+  `id_requetes` int(11) NOT NULL,
+  `libelle` varchar(55) NOT NULL,
+  `description` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ressources` int(11) DEFAULT NULL,
+  `comptes` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `ressources`
+--
+
+CREATE TABLE `ressources` (
+  `id_ressources` int(11) NOT NULL,
+  `libelle` varchar(55) NOT NULL,
+  `Description` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updaded_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `resultats`
+--
+
+CREATE TABLE `resultats` (
+  `id_resultats` int(11) NOT NULL,
+  `libelle` varchar(100) DEFAULT NULL,
+  `lien` varchar(100) NOT NULL,
+  `createt_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `requetes` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `roles`
+--
+
+CREATE TABLE `roles` (
+  `id_roles` int(11) NOT NULL,
+  `libelle` varchar(55) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+CREATE TABLE `users` (
+  `id_users` int(11) NOT NULL,
+  `nom` varchar(55) NOT NULL,
+  `prenoms` varchar(55) NOT NULL,
+  `mail` varchar(55) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `comptes`
+--
+ALTER TABLE `comptes`
+  ADD PRIMARY KEY (`id_comptes`),
+  ADD KEY `users` (`users`),
+  ADD KEY `roles` (`roles`);
+
+--
+-- Index pour la table `connexions`
+--
+ALTER TABLE `connexions`
+  ADD PRIMARY KEY (`id_connexions`),
+  ADD KEY `comptes` (`comptes`);
+
+--
+-- Index pour la table `requetes`
+--
+ALTER TABLE `requetes`
+  ADD PRIMARY KEY (`id_requetes`),
+  ADD KEY `ressources` (`ressources`),
+  ADD KEY `comptes` (`comptes`);
+
+--
+-- Index pour la table `ressources`
+--
+ALTER TABLE `ressources`
+  ADD PRIMARY KEY (`id_ressources`);
+
+--
+-- Index pour la table `resultats`
+--
+ALTER TABLE `resultats`
+  ADD PRIMARY KEY (`id_resultats`),
+  ADD KEY `requetes` (`requetes`);
+
+--
+-- Index pour la table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id_roles`);
+
+--
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id_users`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `comptes`
+--
+ALTER TABLE `comptes`
+  MODIFY `id_comptes` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `connexions`
+--
+ALTER TABLE `connexions`
+  MODIFY `id_connexions` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `requetes`
+--
+ALTER TABLE `requetes`
+  MODIFY `id_requetes` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `ressources`
+--
+ALTER TABLE `ressources`
+  MODIFY `id_ressources` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `resultats`
+--
+ALTER TABLE `resultats`
+  MODIFY `id_resultats` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id_roles` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id_users` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `comptes`
+--
+ALTER TABLE `comptes`
+  ADD CONSTRAINT `comptes_ibfk_1` FOREIGN KEY (`users`) REFERENCES `users` (`id_users`),
+  ADD CONSTRAINT `comptes_ibfk_2` FOREIGN KEY (`roles`) REFERENCES `roles` (`id_roles`);
+
+--
+-- Contraintes pour la table `connexions`
+--
+ALTER TABLE `connexions`
+  ADD CONSTRAINT `connexions_ibfk_1` FOREIGN KEY (`comptes`) REFERENCES `comptes` (`id_comptes`);
+
+--
+-- Contraintes pour la table `requetes`
+--
+ALTER TABLE `requetes`
+  ADD CONSTRAINT `requetes_ibfk_1` FOREIGN KEY (`ressources`) REFERENCES `ressources` (`id_ressources`),
+  ADD CONSTRAINT `requetes_ibfk_2` FOREIGN KEY (`comptes`) REFERENCES `comptes` (`id_comptes`);
+
+--
+-- Contraintes pour la table `resultats`
+--
+ALTER TABLE `resultats`
+  ADD CONSTRAINT `resultats_ibfk_1` FOREIGN KEY (`requetes`) REFERENCES `requetes` (`id_requetes`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
